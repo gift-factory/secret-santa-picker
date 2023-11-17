@@ -56,7 +56,7 @@ final readonly class PlayerList implements IteratorAggregate
         return new self(array_merge(
             ...array_map(
                 static function (string $entry): array {
-                    [$people, $address] = array_map(trim(...), explode("\n", $entry, 2));
+                    [$people, $address] = array_map(trim(...), explode("\n", "$entry\n", 2));
 
                     $players = array_map(
                         static function (string $userName) use ($address): Player {
