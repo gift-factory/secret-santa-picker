@@ -5,7 +5,7 @@ Pick a random player for each other player of a given group
 [![Latest Stable Version](https://poser.pugx.org/gift-factory/secret-santa-picker/v/stable.png)](https://packagist.org/packages/gift-factory/secret-santa-picker)
 [![PHP Version](https://img.shields.io/packagist/php-v/gift-factory/secret-santa-picker.svg)](https://php.net)
 [![License](https://poser.pugx.org/gift-factory/secret-santa-picker/license)](https://packagist.org/packages/gift-factory/secret-santa-picker)
-[![GitHub Actions](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fgift-factory%2Fsecret-santa-picker%2Fbadge&label=Build&logo=none)](https://github.com/gift-factory/secret-santa-picker/actions)
+[![GitHub Actions](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fgift-factory%2Fsecret-santa-picker%2Fbadge%3Fref=main&label=Build&logo=none)](https://github.com/gift-factory/secret-santa-picker/actions)
 [![StyleCI](https://styleci.io/repos/717786903/shield?style=flat)](https://styleci.io/repos/717786903)
 
 ## Install

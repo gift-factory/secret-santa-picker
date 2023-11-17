@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\GiftFactory\SecretSanta;
 
+use GiftFactory\SecretSanta\Exception\DuplicateUserName;
+use GiftFactory\SecretSanta\Exception\InvalidPlayer;
+use GiftFactory\SecretSanta\Exception\PlayerNotFound;
+use GiftFactory\SecretSanta\Exception\UserNameNotFound;
 use GiftFactory\SecretSanta\Player;
 use GiftFactory\SecretSanta\PlayerList;
 use PHPUnit\Framework\TestCase;
@@ -79,5 +83,48 @@ final class PlayerListTest extends TestCase
         }
 
         self::assertGreaterThan(5, count($orders));
+    }
+
+    public function testInvalidPlayer(): void
+    {
+        self::expectExceptionObject(InvalidPlayer::atIndex(0));
+
+        new PlayerList([['wrong-type']]);
+    }
+
+    public function testDuplicateUserName(): void
+    {
+        self::expectExceptionObject(DuplicateUserName::atIndexes(0, 2, 'Dada'));
+
+        PlayerList::fromString(
+            <<<'EOS'
+            Dada
+            ---
+            Dudu
+            ---
+            Dada
+            EOS,
+        );
+    }
+
+    public function testUserNameNotFound(): void
+    {
+        self::expectExceptionObject(UserNameNotFound::for('Didi'));
+
+        PlayerList::fromString(
+            <<<'EOS'
+            Dada
+            ---
+            Dudu
+            EOS,
+        )->getByUserName('Didi');
+    }
+
+    public function testPlayerNotFound(): void
+    {
+        self::assertSame(
+            "Corrupted list of players found searching for 'Didi'",
+            PlayerNotFound::forUserName('Didi')->getMessage(),
+        );
     }
 }
