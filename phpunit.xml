@@ -5,6 +5,8 @@
   bootstrap="tests/bootstrap.php"
   colors="true"
   cacheDirectory=".phpunit.cache"
+  requireCoverageMetadata="true"
+  beStrictAboutCoverageMetadata="true"
 >
   <coverage/>
   <testsuites>

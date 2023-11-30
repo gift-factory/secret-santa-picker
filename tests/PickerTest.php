@@ -5,13 +5,22 @@ declare(strict_types=1);
 namespace Tests\GiftFactory\SecretSanta;
 
 use GiftFactory\SecretSanta\Draw;
+use GiftFactory\SecretSanta\Exception\EmptyListException;
 use GiftFactory\SecretSanta\Exception\MaximumTriesReached;
 use GiftFactory\SecretSanta\Exception\NotEnoughPlayers;
 use GiftFactory\SecretSanta\Picker;
 use GiftFactory\SecretSanta\Player;
 use GiftFactory\SecretSanta\PlayerList;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(Picker::class)]
+#[CoversClass(Player::class)]
+#[CoversClass(PlayerList::class)]
+#[CoversClass(Draw::class)]
+#[CoversClass(NotEnoughPlayers::class)]
+#[CoversClass(MaximumTriesReached::class)]
+#[CoversClass(EmptyListException::class)]
 final class PickerTest extends TestCase
 {
     public function testPick(): void

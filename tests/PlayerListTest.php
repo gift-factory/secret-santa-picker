@@ -6,12 +6,21 @@ namespace Tests\GiftFactory\SecretSanta;
 
 use GiftFactory\SecretSanta\Exception\DuplicateUserName;
 use GiftFactory\SecretSanta\Exception\InvalidPlayer;
+use GiftFactory\SecretSanta\Exception\NotEnoughPlayers;
 use GiftFactory\SecretSanta\Exception\PlayerNotFound;
 use GiftFactory\SecretSanta\Exception\UserNameNotFound;
 use GiftFactory\SecretSanta\Player;
 use GiftFactory\SecretSanta\PlayerList;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(PlayerList::class)]
+#[CoversClass(Player::class)]
+#[CoversClass(NotEnoughPlayers::class)]
+#[CoversClass(InvalidPlayer::class)]
+#[CoversClass(DuplicateUserName::class)]
+#[CoversClass(PlayerNotFound::class)]
+#[CoversClass(UserNameNotFound::class)]
 final class PlayerListTest extends TestCase
 {
     public function testFromString(): void
