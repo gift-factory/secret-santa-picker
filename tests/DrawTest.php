@@ -3,11 +3,15 @@
 declare(strict_types=1);
 
 use GiftFactory\SecretSanta\Draw;
+use GiftFactory\SecretSanta\Exception\ListTypeException;
 use GiftFactory\SecretSanta\Player;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(Draw::class)]
+#[UsesClass(ListTypeException::class)]
+#[UsesClass(Player::class)]
 final class DrawTest extends TestCase
 {
     public function testPick(): void
