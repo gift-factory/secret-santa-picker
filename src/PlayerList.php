@@ -90,6 +90,16 @@ final readonly class PlayerList implements IteratorAggregate
         ));
     }
 
+    public static function fromArray(array $data): self
+    {
+        $data['players'] = array_map(
+            static fn (mixed $player) => is_array($player) ? new Player(...$player) : $player,
+            $data['players'],
+        );
+
+        return new self(...$data);
+    }
+
     public function getByUserName(string $userName): Player
     {
         return $this->players[

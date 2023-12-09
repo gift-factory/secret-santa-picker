@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace GiftFactory\SecretSanta;
 
 use Generator;
+use GiftFactory\SecretSanta\Exception\ListTypeException;
 use IteratorAggregate;
 
 /** @implements IteratorAggregate<Player, Player> */
@@ -16,6 +17,24 @@ final readonly class Draw implements IteratorAggregate
     public function __construct(
         public array $result,
     ) {
+        ListTypeException::assertItemType('result', $result, ['array']);
+
+        foreach ($result as $index => $item) {
+            ListTypeException::assertCountAndItemType("result[$index]", $item, 2, [Player::class]);
+        }
+    }
+
+    public static function fromArray(array $data): self
+    {
+        $data['result'] = array_map(
+            static fn (mixed $duo) => is_array($duo) ? array_map(
+                static fn (mixed $player) => is_array($player) ? new Player(...$player) : $player,
+                $duo,
+            ) : $duo,
+            $data['result'],
+        );
+
+        return new self(...$data);
     }
 
     /** @return Generator<Player, Player> */

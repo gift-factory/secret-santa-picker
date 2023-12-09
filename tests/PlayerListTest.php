@@ -139,23 +139,7 @@ final class PlayerListTest extends TestCase
 
     public function testJsonExport(): void
     {
-        $list = PlayerList::fromString(
-            <<<'EOS'
-            Lois Lane (Red Tornado), Clark Kent (Superman)
-            Daily Planet
-            Metropolis
-            ---
-            Alfred Pennyworth (Thaddeus Crane), Bruce Wayne (Batman)
-            Wayne Manor
-            Gotham City
-            ---
-            Diana Prince (Wonder Woman)
-            Themyscira
-            EOS,
-        );
-        $data = json_decode(json_encode($list), true);
-
-        self::assertSame([
+        $expected = [
             'players' => [
                 [
                     'userName' => 'Red Tornado',
@@ -196,6 +180,27 @@ final class PlayerListTest extends TestCase
                     'address' => 'Themyscira',
                 ],
             ],
-        ], $data);
+        ];
+        $list = PlayerList::fromString(
+            <<<'EOS'
+            Lois Lane (Red Tornado), Clark Kent (Superman)
+            Daily Planet
+            Metropolis
+            ---
+            Alfred Pennyworth (Thaddeus Crane), Bruce Wayne (Batman)
+            Wayne Manor
+            Gotham City
+            ---
+            Diana Prince (Wonder Woman)
+            Themyscira
+            EOS,
+        );
+        $data = json_decode(json_encode($list), true);
+
+        self::assertSame($expected, $data, 'should export as JSON');
+
+        $data = json_decode(json_encode(PlayerList::fromArray($data)), true);
+
+        self::assertSame($expected, $data, 'should be rebuilt from JSON export');
     }
 }

@@ -17,11 +17,32 @@ final class ListTypeException extends RuntimeException
         );
     }
 
+    public static function forCount(string $name, int $count, ?Throwable $previous = null): self
+    {
+        return new self(
+            "$name must be a list of $count elements",
+            previous: $previous,
+        );
+    }
+
     public static function assertItemType(string $name, mixed $value, array $types): void
     {
         if (!self::isListOf($value, $types)) {
             throw self::forTypes($name, $types);
         }
+    }
+
+    public static function assertCount(string $name, mixed $value, int $count): void
+    {
+        if (!is_array($value) || !array_is_list($value) || count($value) !== $count) {
+            throw self::forCount($name, $count);
+        }
+    }
+
+    public static function assertCountAndItemType(string $name, mixed $value, int $count, array $types): void
+    {
+        self::assertCount($name, $value, $count);
+        self::assertItemType($name, $value, $types);
     }
 
     private static function isListOf(mixed $value, array $types): bool
