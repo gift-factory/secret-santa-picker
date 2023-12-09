@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace GiftFactory\SecretSanta;
 
-final readonly class Player
+use GiftFactory\SecretSanta\Exception\ListTypeException;
+use JsonSerializable;
+use Override;
+
+final readonly class Player implements JsonSerializable
 {
     public function __construct(
         public string $userName,
@@ -18,6 +22,8 @@ final readonly class Player
         public array $wishes = [],
         public ?string $notes = null,
     ) {
+        ListTypeException::assertItemType('exclusions', $exclusions, ['string', Player::class]);
+        ListTypeException::assertItemType('wishes', $wishes, ['string',]);
     }
 
     /** @return non-empty-list<Player|string> */
@@ -55,5 +61,17 @@ final readonly class Player
         }
 
         return array_values($byUserName);
+    }
+
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        $data = (array) $this;
+        $data['exclusions'] = array_map(
+            static fn (Player|string $player) => is_string($player) ? $player : $player->userName,
+            array_slice($this->getExclusions(), 1),
+        );
+
+        return array_filter($data, static fn (mixed $value) => $value !== null && $value !== []);
     }
 }

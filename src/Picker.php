@@ -35,11 +35,11 @@ final readonly class Picker
         $donors = $players;
 
         return new Draw(array_map(
-            static function (Player $player) use (&$donors): array {
-                $donor = $donors->without($player->getExclusions())->pick();
+            static function (Player $receiver) use (&$donors): array {
+                $donor = $donors->without($receiver->getExclusions())->pick();
                 $donors = $donors->without($donor);
 
-                return [$donor, $player];
+                return [$donor, $receiver];
             },
             $players->getShuffledPlayers(),
         ));

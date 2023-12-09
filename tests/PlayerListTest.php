@@ -136,4 +136,66 @@ final class PlayerListTest extends TestCase
             PlayerNotFound::forUserName('Didi')->getMessage(),
         );
     }
+
+    public function testJsonExport(): void
+    {
+        $list = PlayerList::fromString(
+            <<<'EOS'
+            Lois Lane (Red Tornado), Clark Kent (Superman)
+            Daily Planet
+            Metropolis
+            ---
+            Alfred Pennyworth (Thaddeus Crane), Bruce Wayne (Batman)
+            Wayne Manor
+            Gotham City
+            ---
+            Diana Prince (Wonder Woman)
+            Themyscira
+            EOS,
+        );
+        $data = json_decode(json_encode($list), true);
+
+        self::assertSame([
+            'players' => [
+                [
+                    'userName' => 'Red Tornado',
+                    'realName' => 'Lois Lane',
+                    'address' => "Daily Planet\nMetropolis",
+                    'exclusions' => [
+                        'Superman',
+                    ],
+                ],
+                [
+                    'userName' => 'Superman',
+                    'realName' => 'Clark Kent',
+                    'address' => "Daily Planet\nMetropolis",
+                    'exclusions' => [
+                        'Red Tornado',
+                    ],
+                ],
+                [
+
+                    'userName' => 'Thaddeus Crane',
+                    'realName' => 'Alfred Pennyworth',
+                    'address' => "Wayne Manor\nGotham City",
+                    'exclusions' => [
+                        'Batman',
+                    ],
+                ],
+                [
+                    'userName' => 'Batman',
+                    'realName' => 'Bruce Wayne',
+                    'address' => "Wayne Manor\nGotham City",
+                    'exclusions' => [
+                        'Thaddeus Crane',
+                    ],
+                ],
+                [
+                    'userName' => 'Wonder Woman',
+                    'realName' => 'Diana Prince',
+                    'address' => 'Themyscira',
+                ],
+            ],
+        ], $data);
+    }
 }
