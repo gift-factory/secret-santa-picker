@@ -23,7 +23,7 @@ final readonly class Player implements JsonSerializable
         public ?string $notes = null,
     ) {
         ListTypeException::assertItemType('exclusions', $exclusions, ['string', Player::class]);
-        ListTypeException::assertItemType('wishes', $wishes, ['string',]);
+        ListTypeException::assertItemType('wishes', $wishes, ['string']);
     }
 
     /** @return non-empty-list<Player|string> */
