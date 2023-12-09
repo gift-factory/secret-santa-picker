@@ -2,14 +2,8 @@
 
 declare(strict_types=1);
 
-
 use GiftFactory\SecretSanta\Draw;
-use GiftFactory\SecretSanta\Exception\EmptyListException;
-use GiftFactory\SecretSanta\Exception\MaximumTriesReached;
-use GiftFactory\SecretSanta\Exception\NotEnoughPlayers;
-use GiftFactory\SecretSanta\Picker;
 use GiftFactory\SecretSanta\Player;
-use GiftFactory\SecretSanta\PlayerList;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -22,18 +16,17 @@ final class DrawTest extends TestCase
             'result' => [
                 [
                     [
-                        'userName' => 'Chuck',
+                        'userName'   => 'Chuck',
                         'exclusions' => [
                             'Bob',
                             'Dane',
                         ],
                     ],
                     [
-                        'userName' => 'Fiona',
-                        'exclusions' =>
-                            [
-                                'Anna',
-                            ],
+                        'userName'   => 'Fiona',
+                        'exclusions' => [
+                            'Anna',
+                        ],
                     ],
                 ],
                 [
@@ -54,19 +47,17 @@ final class DrawTest extends TestCase
                 ],
                 [
                     [
-                        'userName' => 'Fiona',
-                        'exclusions' =>
-                            [
-                                'Anna',
-                            ],
+                        'userName'   => 'Fiona',
+                        'exclusions' => [
+                            'Anna',
+                        ],
                     ],
                     [
-                        'userName' => 'Chuck',
-                        'exclusions' =>
-                            [
-                                'Bob',
-                                'Dane',
-                            ],
+                        'userName'   => 'Chuck',
+                        'exclusions' => [
+                            'Bob',
+                            'Dane',
+                        ],
                     ],
                 ],
                 [

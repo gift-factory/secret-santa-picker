@@ -142,34 +142,34 @@ final class PlayerListTest extends TestCase
         $expected = [
             'players' => [
                 [
-                    'userName' => 'Red Tornado',
-                    'realName' => 'Lois Lane',
-                    'address' => "Daily Planet\nMetropolis",
+                    'userName'   => 'Red Tornado',
+                    'realName'   => 'Lois Lane',
+                    'address'    => "Daily Planet\nMetropolis",
                     'exclusions' => [
                         'Superman',
                     ],
                 ],
                 [
-                    'userName' => 'Superman',
-                    'realName' => 'Clark Kent',
-                    'address' => "Daily Planet\nMetropolis",
+                    'userName'   => 'Superman',
+                    'realName'   => 'Clark Kent',
+                    'address'    => "Daily Planet\nMetropolis",
                     'exclusions' => [
                         'Red Tornado',
                     ],
                 ],
                 [
 
-                    'userName' => 'Thaddeus Crane',
-                    'realName' => 'Alfred Pennyworth',
-                    'address' => "Wayne Manor\nGotham City",
+                    'userName'   => 'Thaddeus Crane',
+                    'realName'   => 'Alfred Pennyworth',
+                    'address'    => "Wayne Manor\nGotham City",
                     'exclusions' => [
                         'Batman',
                     ],
                 ],
                 [
-                    'userName' => 'Batman',
-                    'realName' => 'Bruce Wayne',
-                    'address' => "Wayne Manor\nGotham City",
+                    'userName'   => 'Batman',
+                    'realName'   => 'Bruce Wayne',
+                    'address'    => "Wayne Manor\nGotham City",
                     'exclusions' => [
                         'Thaddeus Crane',
                     ],
@@ -177,7 +177,7 @@ final class PlayerListTest extends TestCase
                 [
                     'userName' => 'Wonder Woman',
                     'realName' => 'Diana Prince',
-                    'address' => 'Themyscira',
+                    'address'  => 'Themyscira',
                 ],
             ],
         ];

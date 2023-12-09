@@ -12,7 +12,7 @@ final class ListTypeException extends RuntimeException
     public static function forTypes(string $name, array $types, ?Throwable $previous = null): self
     {
         return new self(
-            "$name must be a list of " . implode('|', $types),
+            "$name must be a list of ".implode('|', $types),
             previous: $previous,
         );
     }

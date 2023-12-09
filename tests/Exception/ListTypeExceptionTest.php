@@ -56,7 +56,7 @@ final class ListTypeExceptionTest extends TestCase
         ];
 
         return array_combine(array_map(
-            static fn (array $parameters) => json_encode($parameters[2]) . ' ' . json_encode($parameters[3]),
+            static fn (array $parameters) => json_encode($parameters[2]).' '.json_encode($parameters[3]),
             $cases,
         ), $cases);
     }
@@ -88,7 +88,7 @@ final class ListTypeExceptionTest extends TestCase
         ];
 
         return array_combine(array_map(
-            static fn (array $parameters) => json_encode($parameters[2]) . ' ' . $parameters[3],
+            static fn (array $parameters) => json_encode($parameters[2]).' '.$parameters[3],
             $cases,
         ), $cases);
     }
