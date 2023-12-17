@@ -95,6 +95,22 @@ final class PlayerListTest extends TestCase
         }
 
         self::assertGreaterThan(5, count($orders));
+
+        $names = [];
+
+        foreach ($list->getIterator() as $player) {
+            $names[] = $player->userName;
+        }
+
+        sort($names);
+
+        self::assertSame([
+            'Batman',
+            'Red Tornado',
+            'Superman',
+            'Thaddeus Crane',
+            'Wonder Woman',
+        ], $names);
     }
 
     public function testInvalidPlayer(): void

@@ -11,6 +11,6 @@ final class InvalidPlayer extends InvalidArgumentException
 {
     public static function atIndex(int $index, int $code = 0, ?Throwable $previous = null): self
     {
-        return new self("Player #$index is not a valid Planer instance", $code, $previous);
+        return new self("Player #$index is not a valid Player instance", $code, $previous);
     }
 }

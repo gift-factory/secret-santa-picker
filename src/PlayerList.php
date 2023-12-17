@@ -15,14 +15,14 @@ use IteratorAggregate;
 /** @implements IteratorAggregate<Player> */
 final readonly class PlayerList implements IteratorAggregate
 {
-    /** @var non-empty-list<string, int> */
+    /** @var array<string, int> */
     private array $usernames;
 
-    /** @var non-empty-list<Player> */
+    /** @var list<Player> */
     public array $players;
 
     public function __construct(
-        /** @var non-empty-list<Player|Player[]> $players */
+        /** @var list<Player|Player[]> $players */
         array $players = [],
     ) {
         $usernames = [];
@@ -144,9 +144,14 @@ final readonly class PlayerList implements IteratorAggregate
         )));
     }
 
+    public function isEmpty(): bool
+    {
+        return $this->players === [];
+    }
+
     public function pick(): Player
     {
-        if ($this->players === []) {
+        if ($this->isEmpty()) {
             throw new EmptyListException();
         }
 

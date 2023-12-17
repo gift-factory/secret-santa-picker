@@ -33,7 +33,10 @@ jobs:
       - name: Config
         run: |
           echo "<?xml version=\"1.0\"?>
-            <psalm>
+            <psalm
+              findUnusedBaselineEntry="true"
+              findUnusedCode="true"
+            >
               <projectFiles>
                 <directory name=\"src\" />
               </projectFiles>
