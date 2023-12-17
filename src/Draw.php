@@ -11,8 +11,8 @@ use IteratorAggregate;
 /** @implements IteratorAggregate<Player, Player> */
 final readonly class Draw implements IteratorAggregate
 {
-    private const DONOR_COLUMN = 0;
-    private const RECEIVER_COLUMN = 1;
+    private const int DONOR_COLUMN = 0;
+    private const int RECEIVER_COLUMN = 1;
 
     public function __construct(
         public array $result,
