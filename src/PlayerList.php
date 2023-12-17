@@ -8,6 +8,7 @@ use Generator;
 use GiftFactory\SecretSanta\Exception\DuplicateUserName;
 use GiftFactory\SecretSanta\Exception\EmptyListException;
 use GiftFactory\SecretSanta\Exception\InvalidPlayer;
+use GiftFactory\SecretSanta\Exception\ListTypeException;
 use GiftFactory\SecretSanta\Exception\PlayerNotFound;
 use GiftFactory\SecretSanta\Exception\UserNameNotFound;
 use IteratorAggregate;
@@ -25,17 +26,22 @@ final readonly class PlayerList implements IteratorAggregate
         /** @var list<Player|Player[]> $players */
         array $players = [],
     ) {
+        /** @var array<string, int> $usernames */
         $usernames = [];
+        /** @var list<Player> $list */
         $list = [];
 
         foreach ($players as $index => $playerOrGroup) {
+            /** @var list<Player> $group */
             $group = is_array($playerOrGroup) ? $playerOrGroup : [$playerOrGroup];
 
-            foreach ($group as $player) {
-                if (!($player instanceof Player)) {
-                    throw InvalidPlayer::atIndex($index);
-                }
+            try {
+                ListTypeException::assertItemType('group', $group, [Player::class]);
+            } catch (ListTypeException $exception) {
+                throw InvalidPlayer::atIndex($index, previous: $exception);
+            }
 
+            foreach ($group as $player) {
                 $previousIndex = $usernames[$player->userName] ?? null;
 
                 if ($previousIndex !== null) {
@@ -56,7 +62,12 @@ final readonly class PlayerList implements IteratorAggregate
         return new self(array_merge(
             ...array_map(
                 static function (string $entry): array {
-                    [$people, $address] = array_map(trim(...), explode("\n", "$entry\n", 2));
+                    /** @psalm-suppress PossiblyUndefinedArrayOffset */
+                    [$people, $address] = array_map(
+                        trim(...),
+                        // Adding newline to make $address fallback to empty string if string has only 1 line
+                        explode("\n", "$entry\n", 2),
+                    );
 
                     $players = array_map(
                         static function (string $userName) use ($address): Player {
@@ -112,7 +123,7 @@ final readonly class PlayerList implements IteratorAggregate
         return count($this->players);
     }
 
-    /** @return non-empty-list<Player> */
+    /** @return list<Player> */
     public function getShuffledPlayers(): array
     {
         $players = $this->players;

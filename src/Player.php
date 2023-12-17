@@ -32,6 +32,7 @@ final readonly class Player implements JsonSerializable
         return [$this, ...$this->dedupeByUserName($this->exclusions)];
     }
 
+    /** @param list<Player|string> $exclusions */
     public function withExclusions(array $exclusions): self
     {
         $newExclusions = $this->dedupeByUserName([...$this->exclusions, ...$exclusions]);
@@ -48,6 +49,11 @@ final readonly class Player implements JsonSerializable
         );
     }
 
+    /**
+     * @param list<Player|string> $players
+     *
+     * @return list<Player|string>
+     */
     private function dedupeByUserName(array $players): array
     {
         $byUserName = [];
