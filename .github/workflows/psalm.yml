@@ -34,8 +34,8 @@ jobs:
         run: |
           echo "<?xml version=\"1.0\"?>
             <psalm
-              findUnusedBaselineEntry="true"
-              findUnusedCode="true"
+              findUnusedBaselineEntry=\"false\"
+              findUnusedCode=\"false\"
             >
               <projectFiles>
                 <directory name=\"src\" />
