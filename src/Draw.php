@@ -24,6 +24,20 @@ final readonly class Draw implements IteratorAggregate
         }
     }
 
+    /**
+     * @param array{
+     *     result: list<Player|array{
+     *       userName: string,
+     *       realName?: string|null,
+     *       address?: string|null,
+     *       phoneNumber?: string|null,
+     *       email?: string|null,
+     *       exclusions?: list<Player|string>,
+     *       wishes?: list<string>,
+     *       notes?: string|null,
+     *     }>
+     *   } $data
+     */
     public static function fromArray(array $data): self
     {
         $data['result'] = array_map(
