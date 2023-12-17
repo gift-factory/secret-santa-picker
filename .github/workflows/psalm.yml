@@ -1,0 +1,43 @@
+name: "Code Style - Psalm"
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ '**' ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          tools: composer:v2
+          coverage: none
+        env:
+          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Composer install
+        uses: php-actions/composer@v6
+
+      - name: Download Psalm
+        run: |
+          wget https://github.com/vimeo/psalm/releases/latest/download/psalm.phar
+          chmod +x psalm.phar
+
+      - name: Config
+        run: |
+          echo "<?xml version=\"1.0\"?>
+            <psalm>
+              <projectFiles>
+                <directory name=\"src\" />
+              </projectFiles>
+            </psalm>" > psalm.xml
+
+      - name: Psalm
+        run: ./psalm.phar

@@ -1,6 +1,0 @@
-preset: recommended
-
-finder:
-  exclude:
-    # Remove when StyleCI will support PHP 8.3
-    - "src/Draw.php"
