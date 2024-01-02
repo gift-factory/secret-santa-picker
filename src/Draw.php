@@ -35,20 +35,21 @@ final readonly class Draw implements IteratorAggregate
      *       exclusions?: list<Player|string>,
      *       wishes?: list<string>,
      *       notes?: string|null,
-     *     }>
+     *     }>,
      *   } $data
      */
     public static function fromArray(array $data): self
     {
-        $data['result'] = array_map(
-            static fn (mixed $duo) => is_array($duo) ? array_map(
-                static fn (mixed $player) => is_array($player) ? new Player(...$player) : $player,
-                $duo,
-            ) : $duo,
-            $data['result'],
-        );
-
-        return new self(...$data);
+        return new self(...[
+            ...$data,
+            'result' => array_map(
+                static fn (mixed $duo) => is_array($duo) ? array_map(
+                    static fn (mixed $player) => is_array($player) ? new Player(...$player) : $player,
+                    $duo,
+                ) : $duo,
+                $data['result'],
+            ),
+        ]);
     }
 
     /** @return Generator<Player, Player> */
