@@ -58,6 +58,7 @@ final readonly class Draw implements IteratorAggregate
 
         return new self(array_map(
             static fn (array $duo) => array_map(
+                // @phan-suppress-next-line PhanParamTooFewUnpack
                 static fn (mixed $player) => is_array($player) ? new Player(...$player) : $player,
                 $duo,
             ),

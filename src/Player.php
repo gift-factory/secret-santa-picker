@@ -35,6 +35,7 @@ final readonly class Player implements JsonSerializable
     /** @param list<Player|string> $exclusions */
     public function withExclusions(array $exclusions): self
     {
+        // @phan-suppress-next-line PhanTypeMismatchArgument
         $newExclusions = $this->dedupeByUserName([...$this->exclusions, ...$exclusions]);
 
         return $newExclusions === $this->exclusions ? $this : new self(

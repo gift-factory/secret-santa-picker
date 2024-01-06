@@ -27,14 +27,18 @@ jobs:
         uses: actions/cache@v2
         with:
           path: vendor
-          key: ${{ runner.os }}-phan-${{ matrix.php }}-${{ matrix.setup }}-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-phan-${{ matrix.php }}-${{ matrix.setup }}-
+          key: ${{ runner.os }}-phan-kk-${{ matrix.php }}-${{ matrix.setup }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-phan-kk-${{ matrix.php }}-${{ matrix.setup }}-
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install dependencies
         if: steps.composer-cache.outputs.cache-hit != 'true'
-        run: composer require --dev phan/phan --prefer-dist --prefer-stable --no-progress
+        run: |
+          composer config "repositories.phan/phan" vcs "https://github.com/kylekatarnls/phan.git"
+          composer require --dev phan/phan:dev-feature/support-multiline-annotation --prefer-dist --prefer-stable --no-progress
+        env:
+          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Config
         run: |

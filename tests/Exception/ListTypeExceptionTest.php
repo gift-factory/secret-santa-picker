@@ -46,6 +46,24 @@ final class ListTypeExceptionTest extends TestCase
         self::assertTrue($allowed);
     }
 
+    #[DataProvider('getAssertItemTypeDataProvider')]
+    public function testAssertItemTypeForKey(
+        bool $allowed,
+        string $name,
+        mixed $value,
+        array $types,
+    ): void {
+        if (!$allowed) {
+            self::expectExceptionObject(
+                ListTypeException::forTypes("$name\[foobar]", $types),
+            );
+        }
+
+        ListTypeException::assertItemTypeForKey($name, ['foobar' => $value], 'foobar', $types);
+
+        self::assertTrue($allowed);
+    }
+
     public static function getAssertItemTypeDataProvider(): array
     {
         $cases = [
@@ -131,5 +149,14 @@ final class ListTypeExceptionTest extends TestCase
         }
 
         return $cases;
+    }
+
+    public function testAssertItemTypeForMissingKey(): void
+    {
+        self::expectExceptionObject(
+            ListTypeException::forTypes("foo\[bar]", ['int']),
+        );
+
+        ListTypeException::assertItemTypeForKey('foo', [], 'bar', ['int']);
     }
 }
