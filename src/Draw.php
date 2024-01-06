@@ -8,11 +8,13 @@ use Generator;
 use GiftFactory\SecretSanta\Exception\ListTypeException;
 use IteratorAggregate;
 
+use function is_array;
+
 /** @implements IteratorAggregate<Player, Player> */
 final readonly class Draw implements IteratorAggregate
 {
-    private const DONOR_COLUMN = 0;
-    private const RECEIVER_COLUMN = 1;
+    private const int DONOR_COLUMN = 0;
+    private const int RECEIVER_COLUMN = 1;
 
     public function __construct(
         public array $result,
@@ -24,17 +26,44 @@ final readonly class Draw implements IteratorAggregate
         }
     }
 
+    /**
+     * @param array{
+     *     result: list<array{
+     *         Player|array{
+     *             userName: string,
+     *             realName?: string|null,
+     *             address?: string|null,
+     *             phoneNumber?: string|null,
+     *             email?: string|null,
+     *             exclusions?: list<Player|string>,
+     *             wishes?: list<string>,
+     *             notes?: string|null,
+     *         },
+     *         Player|array{
+     *             userName: string,
+     *             realName?: string|null,
+     *             address?: string|null,
+     *             phoneNumber?: string|null,
+     *             email?: string|null,
+     *             exclusions?: list<Player|string>,
+     *             wishes?: list<string>,
+     *             notes?: string|null,
+     *         },
+     *     }>,
+     *   } $data
+     */
     public static function fromArray(array $data): self
     {
-        $data['result'] = array_map(
-            static fn (mixed $duo) => is_array($duo) ? array_map(
+        ListTypeException::assertItemTypeForKey('data', $data, 'result', ['array']);
+
+        return new self(array_map(
+            static fn (array $duo) => array_map(
+                // @phan-suppress-next-line PhanParamTooFewUnpack
                 static fn (mixed $player) => is_array($player) ? new Player(...$player) : $player,
                 $duo,
-            ) : $duo,
+            ),
             $data['result'],
-        );
-
-        return new self(...$data);
+        ));
     }
 
     /** @return Generator<Player, Player> */

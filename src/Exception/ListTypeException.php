@@ -7,6 +7,10 @@ namespace GiftFactory\SecretSanta\Exception;
 use RuntimeException;
 use Throwable;
 
+use function count;
+use function in_array;
+use function is_array;
+
 final class ListTypeException extends RuntimeException
 {
     public static function forTypes(string $name, array $types, ?Throwable $previous = null): self
@@ -30,6 +34,11 @@ final class ListTypeException extends RuntimeException
         if (!self::isListOf($value, $types)) {
             throw self::forTypes($name, $types);
         }
+    }
+
+    public static function assertItemTypeForKey(string $name, array $value, string|int $key, array $types): void
+    {
+        self::assertItemType("$name\[$key]", $value[$key] ?? null, $types);
     }
 
     public static function assertCount(string $name, mixed $value, int $count): void

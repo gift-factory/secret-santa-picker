@@ -8,34 +8,43 @@ use Generator;
 use GiftFactory\SecretSanta\Exception\DuplicateUserName;
 use GiftFactory\SecretSanta\Exception\EmptyListException;
 use GiftFactory\SecretSanta\Exception\InvalidPlayer;
+use GiftFactory\SecretSanta\Exception\ListTypeException;
 use GiftFactory\SecretSanta\Exception\PlayerNotFound;
 use GiftFactory\SecretSanta\Exception\UserNameNotFound;
 use IteratorAggregate;
 
+use function count;
+use function in_array;
+
 /** @implements IteratorAggregate<Player> */
 final readonly class PlayerList implements IteratorAggregate
 {
-    /** @var non-empty-list<string, int> */
+    /** @var array<string, int> */
     private array $usernames;
 
-    /** @var non-empty-list<Player> */
+    /** @var list<Player> */
     public array $players;
 
     public function __construct(
-        /** @var non-empty-list<Player|Player[]> $players */
+        /** @var list<Player|Player[]> $players */
         array $players = [],
     ) {
+        /** @var array<string, int> $usernames */
         $usernames = [];
+        /** @var list<Player> $list */
         $list = [];
 
         foreach ($players as $index => $playerOrGroup) {
+            /** @var list<Player> $group */
             $group = is_array($playerOrGroup) ? $playerOrGroup : [$playerOrGroup];
 
-            foreach ($group as $player) {
-                if (!($player instanceof Player)) {
-                    throw InvalidPlayer::atIndex($index);
-                }
+            try {
+                ListTypeException::assertItemType('group', $group, [Player::class]);
+            } catch (ListTypeException $exception) {
+                throw InvalidPlayer::atIndex($index, previous: $exception);
+            }
 
+            foreach ($group as $player) {
                 $previousIndex = $usernames[$player->userName] ?? null;
 
                 if ($previousIndex !== null) {
@@ -56,7 +65,12 @@ final readonly class PlayerList implements IteratorAggregate
         return new self(array_merge(
             ...array_map(
                 static function (string $entry): array {
-                    [$people, $address] = array_map(trim(...), explode("\n", "$entry\n", 2));
+                    /** @psalm-suppress PossiblyUndefinedArrayOffset */
+                    [$people, $address] = array_map(
+                        trim(...),
+                        // Adding newline to make $address fallback to empty string if string has only 1 line
+                        explode("\n", "$entry\n", 2),
+                    );
 
                     $players = array_map(
                         static function (string $userName) use ($address): Player {
@@ -92,12 +106,11 @@ final readonly class PlayerList implements IteratorAggregate
 
     public static function fromArray(array $data): self
     {
-        $data['players'] = array_map(
+        return new self(array_map(
+            // @phan-suppress-next-line PhanParamTooFewUnpack
             static fn (mixed $player) => is_array($player) ? new Player(...$player) : $player,
             $data['players'],
-        );
-
-        return new self(...$data);
+        ));
     }
 
     public function getByUserName(string $userName): Player
@@ -112,7 +125,7 @@ final readonly class PlayerList implements IteratorAggregate
         return count($this->players);
     }
 
-    /** @return non-empty-list<Player> */
+    /** @return list<Player> */
     public function getShuffledPlayers(): array
     {
         $players = $this->players;
@@ -144,9 +157,14 @@ final readonly class PlayerList implements IteratorAggregate
         )));
     }
 
+    public function isEmpty(): bool
+    {
+        return $this->players === [];
+    }
+
     public function pick(): Player
     {
-        if ($this->players === []) {
+        if ($this->isEmpty()) {
             throw new EmptyListException();
         }
 

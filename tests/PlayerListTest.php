@@ -16,6 +16,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
+use function count;
+
 #[CoversClass(PlayerList::class)]
 #[CoversClass(Player::class)]
 #[CoversClass(NotEnoughPlayers::class)]
@@ -95,6 +97,22 @@ final class PlayerListTest extends TestCase
         }
 
         self::assertGreaterThan(5, count($orders));
+
+        $names = [];
+
+        foreach ($list->getIterator() as $player) {
+            $names[] = $player->userName;
+        }
+
+        sort($names);
+
+        self::assertSame([
+            'Batman',
+            'Red Tornado',
+            'Superman',
+            'Thaddeus Crane',
+            'Wonder Woman',
+        ], $names);
     }
 
     public function testInvalidPlayer(): void

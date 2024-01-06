@@ -32,8 +32,10 @@ final readonly class Player implements JsonSerializable
         return [$this, ...$this->dedupeByUserName($this->exclusions)];
     }
 
+    /** @param list<Player|string> $exclusions */
     public function withExclusions(array $exclusions): self
     {
+        // @phan-suppress-next-line PhanTypeMismatchArgument
         $newExclusions = $this->dedupeByUserName([...$this->exclusions, ...$exclusions]);
 
         return $newExclusions === $this->exclusions ? $this : new self(
@@ -48,6 +50,11 @@ final readonly class Player implements JsonSerializable
         );
     }
 
+    /**
+     * @param list<Player|string> $players
+     *
+     * @return list<Player|string>
+     */
     private function dedupeByUserName(array $players): array
     {
         $byUserName = [];

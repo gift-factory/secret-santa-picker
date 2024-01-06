@@ -1,0 +1,58 @@
+name: "Code Style - Phan"
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ '**' ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          tools: composer:v2
+          coverage: none
+        env:
+          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-phan-kk-${{ matrix.php }}-${{ matrix.setup }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-phan-kk-${{ matrix.php }}-${{ matrix.setup }}-
+        env:
+          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        run: |
+          composer config "repositories.phan/phan" vcs "https://github.com/kylekatarnls/phan.git"
+          composer require --dev phan/phan:dev-feature/support-multiline-annotation --prefer-dist --prefer-stable --no-progress
+        env:
+          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Config
+        run: |
+          mkdir .phan
+          echo "<?php return [
+              'target_php_version' => null,
+              'directory_list' => [
+              'src',
+            ],
+              'exclude_file_regex' => '@^vendor/.*/(tests?|Tests?)/@',
+              'exclude_analysis_directory_list' => [
+              'vendor/'
+            ],
+          ];" > .phan/config.php
+
+      - name: Phan
+        run: ./vendor/bin/phan
