@@ -13,6 +13,9 @@ use GiftFactory\SecretSanta\Exception\PlayerNotFound;
 use GiftFactory\SecretSanta\Exception\UserNameNotFound;
 use IteratorAggregate;
 
+use function count;
+use function in_array;
+
 /** @implements IteratorAggregate<Player> */
 final readonly class PlayerList implements IteratorAggregate
 {

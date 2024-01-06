@@ -16,6 +16,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
+use function count;
+
 #[CoversClass(PlayerList::class)]
 #[CoversClass(Player::class)]
 #[CoversClass(NotEnoughPlayers::class)]

@@ -12,6 +12,9 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
+use function count;
+use function is_array;
+
 #[CoversClass(ListTypeException::class)]
 final class ListTypeExceptionTest extends TestCase
 {
@@ -124,7 +127,7 @@ final class ListTypeExceptionTest extends TestCase
         foreach (self::getAssertItemTypeDataProvider() as $key => [$allowed, $name, $value, $types]) {
             $count = count((array) $value);
             $cases["$key - count ok"] = [is_array($value) && array_is_list($value), $allowed, $name, $value, $count, $types];
-            $cases["$key - wrong count"] = [false, $allowed, $name, $value, $count + random_int(1, 4) * (random_int(0, 1) ? 1 : -1), $types];
+            $cases["$key - wrong count"] = [false, $allowed, $name, $value, $count + mt_rand(1, 4) * (mt_rand(0, 1) ? 1 : -1), $types];
         }
 
         return $cases;
