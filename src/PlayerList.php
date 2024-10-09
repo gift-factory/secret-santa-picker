@@ -15,6 +15,7 @@ use IteratorAggregate;
 
 use function count;
 use function in_array;
+use function is_array;
 
 /** @implements IteratorAggregate<Player> */
 final readonly class PlayerList implements IteratorAggregate
@@ -140,21 +141,17 @@ final readonly class PlayerList implements IteratorAggregate
         yield from $this->getShuffledPlayers();
     }
 
+    public function with(Player|iterable $players): self
+    {
+        return new self([
+            ...$this->getPlayersWithout($players),
+            ...$this->asPlayerList($players),
+        ]);
+    }
+
     public function without(Player|iterable|string $players): self
     {
-        $names = array_map(
-            static fn (Player|string $player) => is_string($player) ? $player : $player->userName,
-            match (true) {
-                is_array($players)    => $players,
-                is_iterable($players) => iterator_to_array($players),
-                default               => [$players],
-            },
-        );
-
-        return new self(array_values(array_filter(
-            $this->players,
-            static fn (Player $player) => !in_array($player->userName, $names, true),
-        )));
+        return new self($this->getPlayersWithout($players));
     }
 
     public function isEmpty(): bool
@@ -169,5 +166,32 @@ final readonly class PlayerList implements IteratorAggregate
         }
 
         return $this->players[array_rand($this->players)];
+    }
+
+    private function asPlayerList(Player|iterable|string $players): array
+    {
+        return match (true) {
+            is_array($players)    => $players,
+            is_iterable($players) => iterator_to_array($players),
+            default               => [$players],
+        };
+    }
+
+    private function asPlayerNames(Player|iterable|string $players): array
+    {
+        return array_map(
+            static fn (Player|string $player) => is_string($player) ? $player : $player->userName,
+            $this->asPlayerList($players),
+        );
+    }
+
+    private function getPlayersWithout(Player|iterable|string $players): array
+    {
+        $names = $this->asPlayerNames($players);
+
+        return array_values(array_filter(
+            $this->players,
+            static fn (Player $player) => !in_array($player->userName, $names, true),
+        ));
     }
 }

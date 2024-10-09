@@ -202,7 +202,58 @@ final class PlayerListTest extends TestCase
                 ],
             ],
         ];
-        $list = PlayerList::fromString(
+        $list = $this->buildPlayerListFromString();
+        $data = json_decode(json_encode($list), true);
+
+        self::assertSame($expected, $data, 'should export as JSON');
+
+        $data = json_decode(json_encode(PlayerList::fromArray($data)), true);
+
+        self::assertSame($expected, $data, 'should be rebuilt from JSON export');
+    }
+
+    public function testWith(): void
+    {
+        $list = $this->buildPlayerListFromString();
+
+        $newList = $list->with($list->getByUserName('Thaddeus Crane')->withExclusions([
+            $list->getByUserName('Wonder Woman'),
+        ]));
+
+        $names = array_column($newList->players, 'userName');
+        sort($names);
+
+        self::assertSame([
+            'Batman',
+            'Red Tornado',
+            'Superman',
+            'Thaddeus Crane',
+            'Wonder Woman',
+        ], $names);
+
+        $newExclusions = $newList->getByUserName('Thaddeus Crane')->getExclusions();
+        $names = array_column($newExclusions, 'userName');
+        sort($names);
+
+        self::assertSame([
+            'Batman',
+            'Thaddeus Crane',
+            'Wonder Woman',
+        ], $names);
+
+        $originalExclusions = $list->getByUserName('Thaddeus Crane')->getExclusions();
+        $names = array_column($originalExclusions, 'userName');
+        sort($names);
+
+        self::assertSame([
+            'Batman',
+            'Thaddeus Crane',
+        ], $names);
+    }
+
+    private function buildPlayerListFromString(): PlayerList
+    {
+        return PlayerList::fromString(
             <<<'EOS'
             Lois Lane (Red Tornado), Clark Kent (Superman)
             Daily Planet
@@ -216,12 +267,5 @@ final class PlayerListTest extends TestCase
             Themyscira
             EOS,
         );
-        $data = json_decode(json_encode($list), true);
-
-        self::assertSame($expected, $data, 'should export as JSON');
-
-        $data = json_decode(json_encode(PlayerList::fromArray($data)), true);
-
-        self::assertSame($expected, $data, 'should be rebuilt from JSON export');
     }
 }
